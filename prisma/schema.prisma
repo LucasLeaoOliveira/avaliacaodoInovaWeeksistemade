@@ -1,0 +1,36 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+model Group {
+  id         Int      @id @default(autoincrement())
+  nome       String
+  resumo     String   
+  nota       Float
+  avaliador  Judge[]                                  // Assumindo que os avaliadores são identificados por nome
+  integrantes Aluno[]                                // Relacionamento com a classe User (Aluno)
+}
+
+// model User representa a classe Aluno
+model Aluno {
+  matricula Int     @id
+  nome      String
+  nota      Float
+  grupoId   Int
+  grupo     Group  @relation(fields: [grupoId], references: [id])
+}
+
+// model Judge representa a classe Avaliador
+model Judge {
+  id        Int      @id @default(autoincrement())
+  nome      String
+  grupos  Group[]  // Os avaliadores avaliam grupos
+  notas     String  // Nota dada para cada grupo avaliado com seu nome
+}
